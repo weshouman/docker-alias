@@ -38,6 +38,10 @@ alias drmf='docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)'
 # Remove all images
 dri() { docker rmi $(docker images -q); }
 
+# Remove image by tag
+# Usage: drmit 'part_of_image_name1\|image_name2'
+drit() { docker rmi $(docker images --format '{{.ID}} {{.Tag}}' | grep $1 | awk '{print $1;}' ); }
+
 # Dockerfile build, e.g., $dbu tcnksm/test 
 dbu() { docker build -t=$1 .; }
 
@@ -55,7 +59,3 @@ dpsi() { docker ps --filter "ancestor=$1"; }
 
 # Get containers even exited by exact image/parent-image name
 dpsai() { docker ps -a --filter "ancestor=$1"; }
-
-# Remove image by tag
-# Usage: drmit 'part_of_image_name1\|image_name2'
-drmit() { docker rmi $(docker images --format '{{.ID}} {{.Tag}}' | grep $1 | awk '{print $1;}' ); }
