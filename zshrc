@@ -40,7 +40,8 @@ dri() { docker rmi $(docker images -q); }
 
 # Remove image by tag
 # Usage: drmit 'part_of_image_name1\|image_name2'
-drit() { docker rmi $(docker images --format '{{.ID}} {{.Tag}}' | grep $1 | awk '{print $1;}' ); }
+# Not for use with numbers that could exist as IDs 
+drit() { docker images --format '{{.ID}} {{.Tag}}' | grep $1 | awk '{print $1;}' | xargs -n1 -P4 -r docker rmi; }
 
 # Dockerfile build, e.g., $dbu tcnksm/test 
 dbu() { docker build -t=$1 .; }
